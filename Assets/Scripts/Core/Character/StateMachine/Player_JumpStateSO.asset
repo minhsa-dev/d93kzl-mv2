@@ -9,6 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 733068a51eae1a941ab3a07780245360, type: 3}
-  m_Name: Vector2ChannelSO
+  m_Script: {fileID: 11500000, guid: e4a3da0595847bc44965f914b01abb4e, type: 3}
+  m_Name: Player_JumpStateSO
   m_EditorClassIdentifier: 
+  stateName: jump state SO

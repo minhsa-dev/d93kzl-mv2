@@ -1,12 +1,12 @@
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInputReader : MonoBehaviour, InputActions.IPlayerActions
+public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
 {
-    [SerializeField] private Vector2ChannelSO moveEvent;
 
-
-    InputActions controls;
+    InputActions inputActions;
+    [SerializeField] private PlayerStateMachine playerStateMachine;
 
 
     public void OnCrouch(InputAction.CallbackContext context)
@@ -16,7 +16,10 @@ public class PlayerInputReader : MonoBehaviour, InputActions.IPlayerActions
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        //
+        if (context.performed)
+        {
+            playerStateMachine.ChangeState(playerStateMachine.states[1]);
+        }
     }
 
     public void OnLook(InputAction.CallbackContext context)
@@ -26,10 +29,7 @@ public class PlayerInputReader : MonoBehaviour, InputActions.IPlayerActions
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            moveEvent.RaiseEvent(context.ReadValue<Vector2>());
-        } 
+
     }
 
     public void OnSprint(InputAction.CallbackContext context)
@@ -39,18 +39,18 @@ public class PlayerInputReader : MonoBehaviour, InputActions.IPlayerActions
 
     void Awake()
     {
-        controls = new InputActions();
-        controls.Player.SetCallbacks(this);
+        inputActions = new InputActions();
+        inputActions.Player.SetCallbacks(this);
     }
 
     void OnEnable()
     {
-        controls.Player.Enable();
+        inputActions.Player.Enable();
     }
 
     void OnDisable()
     {
-        controls.Player.Disable();
+        inputActions.Player.Disable();
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

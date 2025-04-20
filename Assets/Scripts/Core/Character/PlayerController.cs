@@ -2,11 +2,16 @@ using System;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Vector2ChannelSO moveEvent;
+
+
+    [Header("Components")]
     [SerializeField] CharacterController characterController;
-    private Vector2 moveInput;
+
+    [Header("Movement")]
+    private Vector3 moveInput;
+    [SerializeField] private float moveSpeed = 3f;  
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void Awake()
@@ -21,15 +26,15 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        moveEvent.OnEventRaised += HandleMovement;
+
     }
 
     private void OnDisable()
     {
-        moveEvent.OnEventRaised -= HandleMovement;
+
     }
 
-    private void HandleMovement(Vector2 vector)
+    private void HandleMovement(Vector3 vector)
     {
         moveInput = vector;
     }
@@ -42,7 +47,10 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        characterController.Move(new Vector3(moveInput.x, 0, moveInput.y) * Time.deltaTime);
-        Debug.Log($"Movement Input: {moveInput}");
+        if (moveInput.sqrMagnitude > 0.01f)
+        {
+        characterController.Move(new Vector3(moveInput.x, 0, moveInput.z) * moveSpeed * Time.deltaTime);
+        }
+
     }
 }
