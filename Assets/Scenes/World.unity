@@ -855,6 +855,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerStateMachine: {fileID: 1228238891}
+  movementThreshold: 0.1
 --- !u!114 &1228238891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -870,6 +871,7 @@ MonoBehaviour:
   states:
   - {fileID: 11400000, guid: f3d8cc0c796556e428a1661212ae340f, type: 2}
   - {fileID: 11400000, guid: 7dcd32bbb79fef84d9699b467d676a27, type: 2}
+  - {fileID: 11400000, guid: 8198b0c66257c87478a5ed9be9dbf10e, type: 2}
 --- !u!1 &1506246885
 GameObject:
   m_ObjectHideFlags: 0
