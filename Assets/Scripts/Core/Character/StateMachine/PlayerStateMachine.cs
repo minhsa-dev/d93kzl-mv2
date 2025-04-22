@@ -6,7 +6,9 @@ public class PlayerStateMachine : MonoBehaviour
 
     [Header("Assign Possible States Here")]
     public List<StateSO> states;
+
     private StateSO currentState;
+    [SerializeField]private PlayerController player;
 
     private void Start()
     {
@@ -17,6 +19,10 @@ public class PlayerStateMachine : MonoBehaviour
     {
         currentState?.Exit();
         currentState = newState;
+
+        if (currentState is PlayerMoveStateSO moveState)
+            moveState.player = player;
+
         currentState?.Enter();
     }
 
