@@ -7,7 +7,6 @@ public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
 
     InputActions inputActions;
     [SerializeField] private PlayerStateMachine playerStateMachine;
-    [SerializeField] private float movementThreshold = 0.1f;
 
 
     public void OnCrouch(InputAction.CallbackContext context)
@@ -29,15 +28,7 @@ public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
     {
         Vector2 dir = context.ReadValue<Vector2>();
 
-        if (dir.magnitude > movementThreshold && context.performed)
-        {
-            Debug.Log("Move started: " + dir);
-            playerStateMachine.ChangeState(playerStateMachine.states[2]);
-        } else if (dir.magnitude < movementThreshold || context.canceled)
-        {
-            Debug.Log("Move stopped: " + dir);
-            playerStateMachine.ChangeState(playerStateMachine.states[0]);
-        }
+        playerStateMachine.PlayerController.SetMoveInput(dir);
     }
 
     public void OnSprint(InputAction.CallbackContext context)

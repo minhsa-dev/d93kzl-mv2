@@ -7,26 +7,34 @@ public class PlayerMoveStateSO : StateSO
 
     [Header("Movement Settings")]
     [Tooltip("units per second")]
-    public float moveSpeed = 4f;
+    public float moveSpeed = 20f;
 
-    //Assigned at runtime by StateMachine.ChangeState
-    [HideInInspector] public PlayerController player;
 
-    public override void Enter()
+    public override void Enter(PlayerStateMachine stateMachine, float tr)
     {
         Debug.Log($"[FSM] Entering Move State ({stateName}");
     }
 
-    public override void StateUpdate()
+    public override void StateUpdate(PlayerStateMachine stateMachine, float tr)
     {
+        var characterController = stateMachine.PlayerController.characterController;
+
         // Turn 2D input into world-space vector
-        Vector3 dir = player.WorldMovementDirection;
+        Vector3 dir = stateMachine.PlayerController.WorldMovementDirection;
+
         // Move character controller
-        player.characterController.Move(dir * moveSpeed * Time.deltaTime);
+        characterController.Move(dir * moveSpeed * tr);
+
+        // If no input, switch to idle state
+        if (stateMachine.PlayerController.moveInput.magnitude < stateMachine.MinimumMovementThreshold)
+        {
+            stateMachine.ChangeState(stateMachine.IdleState);
+        }
+
         Debug.Log($"[FSM] Updating Move State ({stateName}) ");
     }
 
-    public override void Exit()
+    public override void Exit(PlayerStateMachine stateMachine, float tr)
     {
         Debug.Log($"[FSM] Exiting Move State ({stateName})");
     }

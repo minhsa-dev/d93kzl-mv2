@@ -3,17 +3,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour, InputActions.IPlayerActions
+public class PlayerController : MonoBehaviour
 {
 
 
     [Header("Components")]
     [SerializeField] public CharacterController characterController { get; private set; }
-    [SerializeField] private InputActions inputActions;
+
 
     [Header("Movement")]
     public Vector2 moveInput { get; private set; }
-    [SerializeField] private float moveSpeed = 3f;
+
 
     [Header("Camera")]
     private Transform playerCameraTransform;
@@ -26,31 +26,24 @@ public class PlayerController : MonoBehaviour, InputActions.IPlayerActions
             characterController = GetComponent<CharacterController>();
         }
 
-        if (inputActions == null)
-        {
-            inputActions = new InputActions();
-        }
+
 
         if (playerCameraTransform == null && Camera.main != null)
         {
             playerCameraTransform = Camera.main.transform;
         }
 
-        inputActions.Player.SetCallbacks(this);
-        Debug.Log("[Sanity] PlayerController Awake: callbacks set");
+
+        Debug.Log("[Sanity] PlayerController Awake");
 
     }
 
     private void OnEnable()
     {
-        inputActions.Player.Enable();
-        Debug.Log("[Sanity] PlayerController OnEnable: input enabled");
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Disable();
-        Debug.Log("[Sanity] PlayerController OnDisable: input disabled");
     }
 
 
@@ -62,8 +55,12 @@ public class PlayerController : MonoBehaviour, InputActions.IPlayerActions
     // Update is called once per frame
     void Update()
     {
+    
+    }
 
-
+    public void SetMoveInput(Vector2 input)
+    {
+        moveInput = input;
     }
 
     public Vector3 WorldMovementDirection
@@ -80,30 +77,5 @@ public class PlayerController : MonoBehaviour, InputActions.IPlayerActions
         }
     }
 
-    #region InputAction Callbacks
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        moveInput = context.ReadValue<Vector2>();
-    }
 
-    public void OnLook(InputAction.CallbackContext context)
-    {
-        //
-    }
-
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        //
-    }
-
-    public void OnSprint(InputAction.CallbackContext context)
-    {
-        //
-    }
-
-    public void OnCrouch(InputAction.CallbackContext context)
-    {
-        //
-    }
-    #endregion
 }

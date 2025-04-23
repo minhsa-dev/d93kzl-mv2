@@ -706,4 +706,5 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnNewaction(InputAction.CallbackContext context);
     }
+
 }
