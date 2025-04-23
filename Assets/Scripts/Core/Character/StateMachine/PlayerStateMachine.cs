@@ -1,12 +1,21 @@
 using UnityEngine;
-using System.Collections;
 
 public class PlayerStateMachine : MonoBehaviour
 {
 
-    [Header("Assign Possible States Here")]
-    public PlayerIdleStateSO IdleState;
-    public PlayerMoveStateSO MoveState;
+    [Header("Assign SO Templates(pure data)")]
+    public PlayerIdleStateSO IdleStateSO;
+    public PlayerMoveStateSO MoveStateSO;
+
+
+    // runtime state instances
+    private IState idleStateInstance;
+    private IState moveStateInstance;
+    private IState currentState;
+
+    // public getters so other classes(e.g. SOs) can access them
+    public IState IdleStateInstance => idleStateInstance;
+    public IState MoveStateInstance => moveStateInstance;
 
     [Header("Settings")]
     [Tooltip("Minimum input magnitude to count as movement")]
@@ -15,18 +24,22 @@ public class PlayerStateMachine : MonoBehaviour
     float TickTimer;
 
     [HideInInspector] public PlayerController PlayerController;
-    private StateSO currentState;
 
     private void Awake()
     {
-        // TODO: replace with DI container in future
+        // Cache PlayerController
         PlayerController = GetComponent<PlayerController>();
+
+        // Instantiate per-actor state instances
+        idleStateInstance = new StateInstance(IdleStateSO);
+        moveStateInstance = new StateInstance(MoveStateSO);
+
     }
 
 
     private void Start()
     {
-       ChangeState(IdleState);
+       ChangeState(idleStateInstance);
     }
 
 
@@ -56,7 +69,8 @@ public class PlayerStateMachine : MonoBehaviour
         }
     }
 
-    public void ChangeState(StateSO newState)
+    // modified to accept IState (wrapper) instead of raw SO
+    public void ChangeState(IState newState)
     {
         currentState?.Exit(this, TickRate);
         currentState = newState;

@@ -623,8 +623,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 670a7a3d42d69724195796131b5bc063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IdleState: {fileID: 11400000, guid: f3d8cc0c796556e428a1661212ae340f, type: 2}
-  MoveState: {fileID: 11400000, guid: 8198b0c66257c87478a5ed9be9dbf10e, type: 2}
+  IdleStateSO: {fileID: 11400000, guid: f3d8cc0c796556e428a1661212ae340f, type: 2}
+  MoveStateSO: {fileID: 11400000, guid: 8198b0c66257c87478a5ed9be9dbf10e, type: 2}
   MinimumMovementThreshold: 0.1
   PlayerController: {fileID: 0}
 --- !u!114 &1228238892

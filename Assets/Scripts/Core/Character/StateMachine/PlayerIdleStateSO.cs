@@ -13,7 +13,7 @@ public class PlayerIdleStateSO : StateSO
 
         if (stateMachine.PlayerController.moveInput.magnitude > stateMachine.MinimumMovementThreshold)
         {
-            stateMachine.ChangeState(stateMachine.MoveState);
+            stateMachine.ChangeState(stateMachine.MoveStateInstance);
         }
         Debug.Log("Updating Idle State");
     }

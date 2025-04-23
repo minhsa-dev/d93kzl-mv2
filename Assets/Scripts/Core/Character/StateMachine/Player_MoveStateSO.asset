@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Player_MoveStateSO
   m_EditorClassIdentifier: 
   stateName: PlayerMoveState
-  moveSpeed: 20
+  moveSpeed: 5

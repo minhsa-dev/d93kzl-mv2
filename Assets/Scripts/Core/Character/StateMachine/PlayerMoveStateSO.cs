@@ -33,7 +33,7 @@ public class PlayerMoveStateSO : StateSO
 
         if (stateMachine.PlayerController.moveInput.magnitude < stateMachine.MinimumMovementThreshold)
         {
-            stateMachine.ChangeState(stateMachine.IdleState);
+            stateMachine.ChangeState(stateMachine.IdleStateInstance);
         }
 
         Debug.Log($"[FSM] Updating Move State ({stateName}) ");
