@@ -1,7 +1,5 @@
 using Animancer;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.XR.Haptics;
 
 
 [CreateAssetMenu(menuName = "State/PlayerMoveStateSO")]
@@ -11,6 +9,7 @@ public class PlayerMoveStateSO : StateSO
     [Header("Movement Settings")]
     [Tooltip("units per second")]
     public float moveSpeed = 5f;
+    public float rotationSpeed = 720f;
 
     [Header("Animation Settings")]
     [SerializeField] AnimationClip moveAnimationClip;
@@ -34,9 +33,18 @@ public class PlayerMoveStateSO : StateSO
 
         Vector3 dir = stateMachine.PlayerController.WorldMovementDirection;
 
+        // ROTATION: Only rotate if we have input
+
+            // Calculate target rotation
+            Quaternion targetRotation = Quaternion.LookRotation(dir);
+
         // Move character controller
 
         characterController.Move(dir * moveSpeed * tr);
+
+
+            // Smoothly rotate towards target rotation
+            stateMachine.PlayerController.transform.rotation = Quaternion.RotateTowards(Quaternion.identity, targetRotation, rotationSpeed * tr);
 
         var animState = stateMachine.PlayerController.Animancer.Play(moveAnimationClip, fadeDuration);
 
@@ -54,6 +62,8 @@ public class PlayerMoveStateSO : StateSO
 
         Debug.Log($"[FSM] Updating Move State ({stateName}) ");
     }
+
+
 
     public override void Exit(PlayerStateMachine stateMachine, float tr)
     {
