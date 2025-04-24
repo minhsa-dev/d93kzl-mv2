@@ -1,8 +1,10 @@
+using Animancer;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(AnimancerComponent))]
 public class PlayerController : MonoBehaviour
 {
 
@@ -10,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [Header("Components")]
     [SerializeField] public CharacterController characterController { get; private set; }
 
+    [Header("Animation")]
+    [SerializeField] public AnimancerComponent Animancer { get; private set; }
 
     [Header("Movement")]
     public Vector2 moveInput { get; private set; }
@@ -26,6 +30,10 @@ public class PlayerController : MonoBehaviour
             characterController = GetComponent<CharacterController>();
         }
 
+        if (Animancer == null)
+        {
+            Animancer = GetComponent<AnimancerComponent>();
+        }
 
 
         if (playerCameraTransform == null && Camera.main != null)
