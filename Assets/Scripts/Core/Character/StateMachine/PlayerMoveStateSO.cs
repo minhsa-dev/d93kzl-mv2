@@ -1,3 +1,4 @@
+using Animancer;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.XR.Haptics;
@@ -9,8 +10,16 @@ public class PlayerMoveStateSO : StateSO
 
     [Header("Movement Settings")]
     [Tooltip("units per second")]
-    public float moveSpeed = 20f;
+    public float moveSpeed = 5f;
 
+    [Header("Animation Settings")]
+    [SerializeField] AnimationClip moveAnimationClip;
+
+    // A private field to store our event sequence per-instance (won¡¯t survive domain reload)
+    private AnimancerEvent.Sequence moveEvents;
+
+    [Tooltip("Fade Duration")]
+    [SerializeField] private float fadeDuration = 0.1f;
 
     public override void Enter(PlayerStateMachine stateMachine, float tr)
     {
@@ -29,6 +38,13 @@ public class PlayerMoveStateSO : StateSO
 
         characterController.Move(dir * moveSpeed * tr);
 
+        var animState = stateMachine.PlayerController.Animancer.Play(moveAnimationClip, fadeDuration);
+
+        if (animState.Events(this, out moveEvents))
+        {
+            moveEvents.OnEnd = () =>
+                Debug.Log("Idle animation looped");
+        }
         // If no input, switch to idle state
 
         if (stateMachine.PlayerController.moveInput.magnitude < stateMachine.MinimumMovementThreshold)
