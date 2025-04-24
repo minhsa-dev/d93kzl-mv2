@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Player_IdleStateSO
   m_EditorClassIdentifier: 
   stateName: PlayerIdleState
+  idleAnimationClip: {fileID: 7400000, guid: 11db5591659e5b7469b7293687fbe429, type: 3}
+  fadeDuration: 0.1

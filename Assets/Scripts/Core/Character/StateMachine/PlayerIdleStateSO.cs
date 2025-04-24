@@ -1,3 +1,4 @@
+using Animancer;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "State/IdleStateSO")]
@@ -9,11 +10,19 @@ public class PlayerIdleStateSO : StateSO
     [Tooltip("Fade Duration")]
     [SerializeField] float fadeDuration = 0.1f;
 
+    // A private field to store our event sequence per-instance (won¡¯t survive domain reload)
+    private AnimancerEvent.Sequence _idleEvents;
 
     public override void Enter(PlayerStateMachine stateMachine, float tr)
     {
         Debug.Log("Entering Idle State");
-        stateMachine.PlayerController.Animancer.Play(idleAnimationClip, fadeDuration);
+        var animState = stateMachine.PlayerController.Animancer.Play(idleAnimationClip, fadeDuration);
+
+        if (animState.Events(this, out _idleEvents))
+        {
+            _idleEvents.OnEnd = () =>
+                Debug.Log("Idle animation looped");
+        }
     }
 
     public override void StateUpdate(PlayerStateMachine stateMachine, float tr)
