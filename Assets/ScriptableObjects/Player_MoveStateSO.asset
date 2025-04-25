@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stateName: PlayerMoveState
   moveSpeed: 5
+  rotationSmoothingSpeed: 10
   moveAnimationClip: {fileID: 7400000, guid: 3043a959deb9403418afbb805236cd70, type: 3}
   fadeDuration: 0.1
