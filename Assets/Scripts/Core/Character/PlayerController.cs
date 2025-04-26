@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement")]
     public Vector2 moveInput { get; private set; }
+    private Vector3 moveAccumulator = Vector3.zero;
 
 
     [Header("Camera")]
@@ -63,12 +64,28 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    
+        MoveCharacterOncePerFrame();
+    }
+
+    private void MoveCharacterOncePerFrame()
+    {
+        // Allows us to accumulate movement over multiple frames and apply it once per frame
+
+        if (moveAccumulator.sqrMagnitude > 0f)
+        {
+            characterController.Move(moveAccumulator);
+            moveAccumulator = Vector3.zero;
+        }
     }
 
     public void SetMoveInput(Vector2 input)
     {
         moveInput = input;
+    }
+
+    public void AccumulateMovement(Vector3 velocity, float deltaTime)
+    {
+        moveAccumulator += velocity * deltaTime;
     }
 
     public Vector3 WorldMovementDirection

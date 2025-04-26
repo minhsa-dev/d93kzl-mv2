@@ -1,5 +1,6 @@
 using Animancer;
 using UnityEngine;
+using System.Linq;
 
 [CreateAssetMenu(menuName = "State/IdleStateSO")]
 public class PlayerIdleStateSO : StateSO
@@ -31,8 +32,10 @@ public class PlayerIdleStateSO : StateSO
         if (stateMachine.PlayerController.moveInput.magnitude > stateMachine.MinimumMovementThreshold)
         {
             stateMachine.ChangeState(stateMachine.MoveStateInstance);
+            return;
         }
         Debug.Log("Updating Idle State");
+
     }
 
     public override void Exit(PlayerStateMachine stateMachine, float tr)

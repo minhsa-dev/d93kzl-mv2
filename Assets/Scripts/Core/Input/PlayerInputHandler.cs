@@ -1,27 +1,89 @@
-using UnityEditorInternal;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// Captures raw input callbacks, buffers them, and exposes buffered inputs for the FSM to consume.
 public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
 {
 
     InputActions inputActions;
     [SerializeField] private PlayerStateMachine playerStateMachine;
 
+    [Header("Buffer")]
 
+    // Maximum number of buffered events to keep
+    private const int BufferCapacity = 16;
+
+    // Ring buffer to store recent input events
+    private readonly Queue<BufferedInput> inputBuffer = new(BufferCapacity);
+
+    // Time window (in seconds) to consider inputs "fresh"
+
+    [Tooltip("How long inputs remain valid (e.g., 0.15 = 150ms)")]
+    [SerializeField] private float bufferWindow = 0.15f;
+
+
+    #region Buffer Input System
+    private void Enqueue(BufferedInput.ActionType action)
+    {
+        // Adds a new input event to the ring buffer, discarding oldest if full.
+        if (inputBuffer.Count >= BufferCapacity)
+        {
+            inputBuffer.Dequeue();
+        }
+
+        inputBuffer.Enqueue(new BufferedInput
+        {
+            Action = action,
+            eventTime = Time.time
+        });
+    }
+
+    /// <summary>
+    /// Called once per FSM tick to retrieve and clear inputs that occurred within the bufferWindow.
+    /// </summary>
+    /// <param name="currentTime">Current Time.time at tick.</param>
+    public List<BufferedInput> ConsumeBufferedInputs(float currentTime)
+    {
+        var consumed = new List<BufferedInput>(BufferCapacity);
+
+        // process all buffered inputs
+        while (inputBuffer.Count > 0)
+        {
+
+            var next = inputBuffer.Peek();
+            // if event is recent enough, consume it
+            if (next.eventTime >= currentTime - bufferWindow)
+            {
+                consumed.Add(next);
+            }
+
+                       inputBuffer.Dequeue();
+
+        }
+
+        return consumed;
+    }
+    #endregion
+
+
+    #region Callback Contexts
     public void OnCrouch(InputAction.CallbackContext context)
     {
-        //
+        //NOOP for now
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
-
+        if (context.performed)
+        {
+            Enqueue(BufferedInput.ActionType.Jump);
+        }
     }
 
     public void OnLook(InputAction.CallbackContext context)
     {
-        //
+        //NOOP - handled by cinemachine
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -31,16 +93,24 @@ public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
         playerStateMachine.PlayerController.SetMoveInput(dir);
     }
 
+    public void OnZoom(InputAction.CallbackContext context)
+    {
+        //NOOP for now
+    }
+
     public void OnSprint(InputAction.CallbackContext context)
     {
-        //
+        //NOOP for now
     }
+    #endregion
 
     void Awake()
     {
+        // Initialize InputActions and register this handler
         inputActions = new InputActions();
         inputActions.Player.SetCallbacks(this);
     }
+
 
     void OnEnable()
     {
@@ -57,11 +127,10 @@ public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
         
     }
 
-    
-
     // Update is called once per frame
     void Update()
     {
         
     }
+
 }
