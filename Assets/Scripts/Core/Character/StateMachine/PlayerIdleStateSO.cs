@@ -36,6 +36,15 @@ public class PlayerIdleStateSO : StateSO
         }
         Debug.Log("Updating Idle State");
 
+        bool jumpRequested = stateMachine.BufferedInputs.
+            Any(b => b.Action == BufferedInput.ActionType.Jump);
+
+        if (jumpRequested)
+        {
+            stateMachine.ChangeState(stateMachine.JumpStateInstance);
+            return;
+        }
+
     }
 
     public override void Exit(PlayerStateMachine stateMachine, float tr)

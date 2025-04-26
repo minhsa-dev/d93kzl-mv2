@@ -9,16 +9,18 @@ public class PlayerStateMachine : MonoBehaviour
     [Header("Assign SO Templates(pure data)")]
     public PlayerIdleStateSO IdleStateSO;
     public PlayerMoveStateSO MoveStateSO;
-    // TODO: Create and assign a JumpStateSO
+    public PlayerJumpStateSO JumpStateSO;
 
     [Header("Runtime State Instances to reuse")]
     private IState idleStateInstance;
     private IState moveStateInstance;
+    private IState jumpStateInstance;
     private IState currentState;
 
     [Header("Runtime State Instance Properties")]
     public IState IdleStateInstance => idleStateInstance;
     public IState MoveStateInstance => moveStateInstance;
+    public IState JumpStateInstance => jumpStateInstance;
 
     [Header("Settings")]
     public float MinimumMovementThreshold = 0.1f;
@@ -48,6 +50,7 @@ public class PlayerStateMachine : MonoBehaviour
         // Instantiate per-actor state instances
         idleStateInstance = new StateInstance(IdleStateSO);
         moveStateInstance = new StateInstance(MoveStateSO);
+        jumpStateInstance = new StateInstance(JumpStateSO);
 
     }
 
@@ -66,8 +69,9 @@ public class PlayerStateMachine : MonoBehaviour
 
     /// <summary>
     /// Accumulates real-time into fixed 60Hz logic ticks and processes them.
-    /// Also consumes input buffer each tick for deterministic FSM input sampling.
+    /// Consumes buffered inputs just before each tick for deterministic FSM sampling.
     /// </summary>
+
     private void SixtyFPSLogicTimer()
     {
         // 1) Ask Unity: ¡°how many real seconds have passed since last Update?¡±

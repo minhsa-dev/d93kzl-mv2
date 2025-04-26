@@ -17,9 +17,7 @@ public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
     // Ring buffer to store recent input events
     private readonly Queue<BufferedInput> inputBuffer = new(BufferCapacity);
 
-    // Time window (in seconds) to consider inputs "fresh"
-
-    [Tooltip("How long inputs remain valid (e.g., 0.15 = 150ms)")]
+    // Time window (in seconds) to consider inputs "fresh" e.g 0.15f = 0.15 seconds
     [SerializeField] private float bufferWindow = 0.15f;
 
 
@@ -51,13 +49,16 @@ public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
         while (inputBuffer.Count > 0)
         {
 
+            // checks the oldest event
             var next = inputBuffer.Peek();
-            // if event is recent enough, consume it
+            // if event is recent enough, consume it (latest first, >= current time - bufferwindow, 
+            // any input within that time is added to the list
             if (next.eventTime >= currentTime - bufferWindow)
             {
                 consumed.Add(next);
             }
-
+                        // Dequeue all inputs to get ready for new ones
+                        // should only be one call for input per logic tick
                        inputBuffer.Dequeue();
 
         }

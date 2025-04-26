@@ -9,11 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e37913913f8776428d73e20be21a287, type: 3}
-  m_Name: Player_MoveStateSO
+  m_Script: {fileID: 11500000, guid: 27a6f6545dbcb66439471887c5b1cf30, type: 3}
+  m_Name: Player_JumpStateSO
   m_EditorClassIdentifier: 
-  stateName: Player Move State
-  moveSpeed: 5
-  rotationSmoothingSpeed: 10
-  moveAnimationClip: {fileID: 7400000, guid: 3043a959deb9403418afbb805236cd70, type: 3}
-  fadeDuration: 0.1
+  stateName: Player Jump State
