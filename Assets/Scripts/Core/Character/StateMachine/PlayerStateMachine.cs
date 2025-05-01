@@ -89,11 +89,15 @@ public class PlayerStateMachine : MonoBehaviour
             float tickTime = Time.time;
             BufferedInputs = playerInputHandler.ConsumeBufferedInputs(tickTime);
 
+            var stateBefore = currentState;
             // a) Perform exactly one 60 Hz logic step
             currentState?.StateUpdate(this, TickRate);
 
             // b) Remove that slice of time from our bank
             TickTimer -= TickRate;
+
+            if (!ReferenceEquals(stateBefore, currentState))
+                break;
         }
     }
 

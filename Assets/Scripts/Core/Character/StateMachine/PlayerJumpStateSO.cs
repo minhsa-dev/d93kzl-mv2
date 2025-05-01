@@ -5,8 +5,7 @@ public class PlayerJumpStateSO : StateSO
 {
 
     [Header("Jump Settings")]
-    [SerializeField] private float jumpDuration = 0.5f; // how long to stay in jump for testing
-    private float timer;
+    [SerializeField] private float jumpSpeed = 5f;
 
     [Header("Animancer Settings")]
     [SerializeField] AnimationClip jumpAnimationClip;
@@ -14,13 +13,17 @@ public class PlayerJumpStateSO : StateSO
 
     public override void Enter(PlayerStateMachine stateMachine, float tr)
     {
-        timer = 0f;
+        stateMachine.PlayerController.verticalVelocity = jumpSpeed;
+
+        if (jumpAnimationClip != null)
+        {
+            stateMachine.PlayerController.Animancer.Play(jumpAnimationClip, fadeDuration);
+        }
         Debug.Log($"[FSM] Entering ({stateName}");
     }
     public override void StateUpdate(PlayerStateMachine stateMachine, float tr)
     {
-        timer += tr;
-        if (timer >= jumpDuration)
+        if (stateMachine.PlayerController.IsGrounded() && stateMachine.PlayerController.verticalVelocity <= 0f)
         {
             stateMachine.ChangeState(stateMachine.IdleStateInstance);
             return;

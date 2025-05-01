@@ -39,7 +39,7 @@ public class PlayerIdleStateSO : StateSO
         bool jumpRequested = stateMachine.BufferedInputs.
             Any(b => b.Action == BufferedInput.ActionType.Jump);
 
-        if (jumpRequested)
+        if (jumpRequested && stateMachine.PlayerController.IsGrounded())
         {
             stateMachine.ChangeState(stateMachine.JumpStateInstance);
             return;

@@ -19,6 +19,19 @@ public class PlayerController : MonoBehaviour
     public Vector2 moveInput { get; private set; }
     private Vector3 moveAccumulator = Vector3.zero;
 
+    [Header("Gravity/Jump Settings")]
+    // current vertical speed units/sec
+    public float verticalVelocity;
+    // upward speed applied when jump starts
+    public float jumpSpeed = 5f;
+
+    [Header("Ground Settings")]
+    // Layers Considered as ground
+    [SerializeField] private LayerMask groundLayerMask;
+    // Sphere radius for ground check
+    [SerializeField] private float groundCheckRadius = 0.2f;
+    // Vertical offset for ground check
+    [SerializeField] private Vector3 groundCheckOffset = new Vector3(0f, -1f, 0f);
 
     [Header("Camera")]
     private Transform playerCameraTransform;
@@ -64,6 +77,17 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // Gravity: increase downward velocity
+        verticalVelocity += Physics.gravity.y * Time.deltaTime;
+
+        Debug.Log($"{verticalVelocity} = verticalVelocity");
+
+
+        // Apply gravity displacement
+        AccumulateMovement(new Vector3(0, verticalVelocity, 0), Time.deltaTime);
+
+        // 3) Apply all accumulated movement (including horizontal & vertical) in one Move call
         MoveCharacterOncePerFrame();
     }
 
@@ -102,5 +126,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns true if the character is touching ground. Uses a small sphere cast beneath the player.
+    /// </summary>
 
+    public bool IsGrounded() => characterController.isGrounded;
 }
