@@ -80,6 +80,12 @@ public class PlayerController : MonoBehaviour
 
         // Gravity: increase downward velocity
         verticalVelocity += Physics.gravity.y * Time.deltaTime;
+        if (IsGrounded() && verticalVelocity < 0f)
+        {
+            // If we are grounded, reset vertical velocity to zero
+            verticalVelocity = 0f;
+        }
+
 
         Debug.Log($"{verticalVelocity} = verticalVelocity");
 
