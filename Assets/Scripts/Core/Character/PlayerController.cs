@@ -89,6 +89,8 @@ public class PlayerController : MonoBehaviour
         horizontalVelocity = velocity;
     }
 
+    public bool IsGrounded() => characterController.isGrounded;
+
     public void AddHorizontalVelocity(Vector3 targetVelocity, float deltaTime)
     {
         // Steers your horizontal velocity toward the target (used in air)
@@ -183,5 +185,4 @@ public class PlayerController : MonoBehaviour
     /// Returns true if the character is touching ground. Uses a small sphere cast beneath the player.
     /// </summary>
 
-    public bool IsGrounded() => characterController.isGrounded;
 }
