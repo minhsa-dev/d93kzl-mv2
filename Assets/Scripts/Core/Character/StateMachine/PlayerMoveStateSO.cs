@@ -70,6 +70,15 @@ public class PlayerMoveStateSO : StateSO
             moveEvents.OnEnd = () =>
                 Debug.Log("Idle animation looped");
         }
+
+        //----- jump transition using our buffered + coyote helper ----
+        if (stateMachine.PlayerController.ShouldPerformJump)
+        {
+            stateMachine.PlayerController.ClearJumpBuffer();
+            stateMachine.ChangeState(stateMachine.JumpStateInstance);
+            return;
+        }
+
         // If no input, switch to idle state
 
         if (stateMachine.PlayerController.moveInput.magnitude < stateMachine.MinimumMovementThreshold)

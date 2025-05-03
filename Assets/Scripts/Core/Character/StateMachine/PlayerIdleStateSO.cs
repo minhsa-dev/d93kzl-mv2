@@ -36,11 +36,10 @@ public class PlayerIdleStateSO : StateSO
         }
         Debug.Log("Updating Idle State");
 
-        bool jumpRequested = stateMachine.BufferedInputs.
-            Any(b => b.Action == BufferedInput.ActionType.Jump);
 
-        if (jumpRequested && stateMachine.PlayerController.IsGrounded())
+        if (stateMachine.PlayerController.ShouldPerformJump)
         {
+            stateMachine.PlayerController.ClearJumpBuffer();
             stateMachine.ChangeState(stateMachine.JumpStateInstance);
             return;
         }

@@ -25,6 +25,16 @@ public class PlayerController : MonoBehaviour
     // upward speed applied when jump starts
     public float jumpSpeed = 5f;
 
+    [Header("Coyote Time")]
+    // how long to keep a jump press buffered
+    [SerializeField] private float jumpBufferTime = 0.2f;
+    [SerializeField] private float coyoteTime = 0.15f;
+
+    //internal timers
+    private float lastJumpPressedTime = float.NegativeInfinity;
+    private float lastGroundedTime = float.NegativeInfinity;
+
+
     [Header("Ground Settings")]
     // Layers Considered as ground
     [SerializeField] private LayerMask groundLayerMask;
@@ -60,6 +70,17 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    public bool ShouldPerformJump => (Time.time - lastJumpPressedTime) <= jumpBufferTime && (Time.time - lastGroundedTime) <= coyoteTime;
+    public void BufferJumpInput()
+    {
+        lastJumpPressedTime = Time.time;
+    }
+    // clears buffered jump input so we don't immediate rejump
+    public void ClearJumpBuffer()
+    {
+        lastJumpPressedTime = float.NegativeInfinity;
+    }
+
     private void OnEnable()
     {
     }
@@ -77,6 +98,15 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ COYOTE & BUFFER LOGIC ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
+        // Track last time we were grounded
+        if (IsGrounded())
+        {
+            lastGroundedTime = Time.time;
+        }
+        // (States will poll this property to see if we should jump)
+        // We clear the buffered jump as soon as it's consumed by the FSM.
+
 
         // Gravity: increase downward velocity
         verticalVelocity += Physics.gravity.y * Time.deltaTime;

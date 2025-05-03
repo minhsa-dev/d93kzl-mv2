@@ -76,9 +76,11 @@ public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
 
     public void OnJump(InputAction.CallbackContext context)
     {
+        // when user press jump, buffer the input
+        // FSM will check buffer on its tick
         if (context.performed)
         {
-            Enqueue(BufferedInput.ActionType.Jump);
+            playerStateMachine.PlayerController.BufferJumpInput();
         }
     }
 
