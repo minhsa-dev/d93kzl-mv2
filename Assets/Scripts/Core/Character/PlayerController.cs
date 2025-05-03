@@ -19,6 +19,14 @@ public class PlayerController : MonoBehaviour
     public Vector2 moveInput { get; private set; }
     private Vector3 moveAccumulator = Vector3.zero;
 
+    [Header("Air Control")]
+    // acceleration when in the air (units/sec^2)
+    [SerializeField] private float airControlAcceleration = 20f;
+    private Vector3 horizontalVelocity = Vector3.zero;
+
+    // current horizontal veloccity preserved across states
+    public Vector3 HorizontalVelocity => horizontalVelocity;
+
     [Header("Gravity/Jump Settings")]
     // current vertical speed units/sec
     public float verticalVelocity;
@@ -35,13 +43,6 @@ public class PlayerController : MonoBehaviour
     private float lastGroundedTime = float.NegativeInfinity;
 
 
-    [Header("Ground Settings")]
-    // Layers Considered as ground
-    [SerializeField] private LayerMask groundLayerMask;
-    // Sphere radius for ground check
-    [SerializeField] private float groundCheckRadius = 0.2f;
-    // Vertical offset for ground check
-    [SerializeField] private Vector3 groundCheckOffset = new Vector3(0f, -1f, 0f);
 
     [Header("Camera")]
     private Transform playerCameraTransform;
@@ -70,6 +71,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    #region Jump
     public bool ShouldPerformJump => (Time.time - lastJumpPressedTime) <= jumpBufferTime && (Time.time - lastGroundedTime) <= coyoteTime;
     public void BufferJumpInput()
     {
@@ -80,7 +82,22 @@ public class PlayerController : MonoBehaviour
     {
         lastJumpPressedTime = float.NegativeInfinity;
     }
+    #endregion
+    #region Air Control
+    public void SetHorizontalVelocity(Vector3 velocity)
+    {
+        horizontalVelocity = velocity;
+    }
 
+    public void AddHorizontalVelocity(Vector3 targetVelocity, float deltaTime)
+    {
+        // Steers your horizontal velocity toward the target (used in air)
+        // Accelerate towards desired velocity
+        horizontalVelocity = Vector3.MoveTowards(horizontalVelocity, targetVelocity, airControlAcceleration * deltaTime);
+        // never exceed maximum (targetVelocity.magnitude)
+        horizontalVelocity = Vector3.ClampMagnitude(horizontalVelocity, targetVelocity.magnitude);
+    }
+    #endregion
     private void OnEnable()
     {
     }

@@ -23,6 +23,13 @@ public class PlayerJumpStateSO : StateSO
     }
     public override void StateUpdate(PlayerStateMachine stateMachine, float tr)
     {
+        var dir = stateMachine.PlayerController.WorldMovementDirection;
+        float runSpeed = stateMachine.MoveStateSO.moveSpeed;
+        stateMachine.PlayerController.AddHorizontalVelocity(dir * runSpeed, tr);
+        stateMachine.PlayerController.AccumulateMovement(stateMachine.PlayerController.HorizontalVelocity, tr);
+
+
+
         if (stateMachine.PlayerController.IsGrounded() && stateMachine.PlayerController.verticalVelocity <= 0f)
         {
             stateMachine.ChangeState(stateMachine.IdleStateInstance);

@@ -35,8 +35,8 @@ public class PlayerMoveStateSO : StateSO
 
         Vector3 dir = stateMachine.PlayerController.WorldMovementDirection;
 
-        // accumlate the movement for the character controller to move once per update
-        stateMachine.PlayerController.AccumulateMovement(dir * moveSpeed, tr);
+        stateMachine.PlayerController.SetHorizontalVelocity(dir * moveSpeed);
+        stateMachine.PlayerController.AccumulateMovement(stateMachine.PlayerController.HorizontalVelocity, tr);
 
         // ROTATION:
         if (dir.sqrMagnitude > stateMachine.MinimumMovementThreshold)
