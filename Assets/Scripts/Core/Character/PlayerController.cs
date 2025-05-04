@@ -181,8 +181,5 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Returns true if the character is touching ground. Uses a small sphere cast beneath the player.
-    /// </summary>
 
 }

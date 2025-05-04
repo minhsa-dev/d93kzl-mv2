@@ -60,9 +60,6 @@ public class PlayerMoveStateSO : StateSO
 
         }
 
-
-
-
         var animState = stateMachine.PlayerController.Animancer.Play(moveAnimationClip, fadeDuration);
 
         if (animState.Events(this, out moveEvents))
@@ -80,7 +77,6 @@ public class PlayerMoveStateSO : StateSO
         }
 
         // If no input, switch to idle state
-
         if (stateMachine.PlayerController.moveInput.magnitude < stateMachine.MinimumMovementThreshold)
         {
             stateMachine.ChangeState(stateMachine.IdleStateInstance);
