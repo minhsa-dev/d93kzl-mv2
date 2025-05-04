@@ -34,6 +34,15 @@ public class PlayerController : MonoBehaviour
     // upward speed applied when jump starts
     public float jumpSpeed = 5f;
 
+    [Header("Coyote Time")]
+    // how long to keep a jump press buffered
+    [SerializeField] private float jumpBufferTime = 0.2f;
+    [SerializeField] private float coyoteTime = 0.15f;
+
+    //internal jump timers
+    private float lastJumpPressedTime = float.NegativeInfinity;
+    private float lastGroundedTime = float.NegativeInfinity;
+
     [Header("Jump Helpers")]
     [Tooltip("Gravity Multipler when falling")]
     [SerializeField] private float fallGravityMultiplier = 2.5f;
@@ -52,9 +61,7 @@ public class PlayerController : MonoBehaviour
         jumpHeld = held;
     }
 
-    //internal timers
-    private float lastJumpPressedTime = float.NegativeInfinity;
-    private float lastGroundedTime = float.NegativeInfinity;
+
 
 
 
@@ -96,6 +103,27 @@ public class PlayerController : MonoBehaviour
     {
         lastJumpPressedTime = float.NegativeInfinity;
     }
+
+    private float DetermineGravityMultiplier()
+    {
+        float gScale = 1f;
+        if (verticalVelocity < 0f)
+        {
+            gScale = fallGravityMultiplier;
+        }
+        else if (verticalVelocity > 0f && !jumpHeld)
+        {
+            gScale = lowJumpGravityMultiplier;
+        }
+        // Apex hang
+        if (Mathf.Abs(verticalVelocity) < apexHangThreshold)
+        {
+            gScale = Mathf.Min(gScale, apexHangGravityMultiplier);
+        }
+
+        return gScale;
+    }
+
     #endregion
     #region Air Control
     public void SetHorizontalVelocity(Vector3 velocity)
@@ -131,24 +159,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         // ---Variable gravity
-        float gScale = 1f;
-        if (verticalVelocity < 0f)
-        {
-            gScale = fallGravityMultiplier;
-        }
-        else if (verticalVelocity > 0f && !jumpHeld)
-        {
-            gScale = lowJumpGravityMultiplier;
-        }
-        // Apex hang
-        if (Mathf.Abs(verticalVelocity) < apexHangThreshold)
-        {
-            gScale = Mathf.Min(gScale, apexHangGravityMultiplier);
-        }
-
-
+        float gScale = DetermineGravityMultiplier();
         verticalVelocity += Physics.gravity.y * gScale * Time.deltaTime;
 
         // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ COYOTE & BUFFER LOGIC ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
@@ -159,16 +171,13 @@ public class PlayerController : MonoBehaviour
         }
         // (States will poll this property to see if we should jump)
         // We clear the buffered jump as soon as it's consumed by the FSM.
-
         if (IsGrounded() && verticalVelocity < 0f)
         {
             // If we are grounded, reset vertical velocity to zero
             verticalVelocity = 0f;
         }
 
-
         Debug.Log($"{verticalVelocity} = verticalVelocity");
-
 
         // Apply gravity displacement
         AccumulateMovement(new Vector3(0, verticalVelocity, 0), Time.deltaTime);
