@@ -10,17 +10,23 @@ public class PlayerStateMachine : MonoBehaviour
     public PlayerIdleStateSO IdleStateSO;
     public PlayerMoveStateSO MoveStateSO;
     public PlayerJumpStateSO JumpStateSO;
+    public PlayerFallingStateSO FallingStateSO;
+    public PlayerLandingStateSO LandingStateSO;
 
     [Header("Runtime State Instances to reuse")]
     private IState idleStateInstance;
     private IState moveStateInstance;
     private IState jumpStateInstance;
+    private IState fallingStateInstance;
+    private IState landingStateInstance;    
     private IState currentState;
 
     [Header("Runtime State Instance Properties")]
     public IState IdleStateInstance => idleStateInstance;
     public IState MoveStateInstance => moveStateInstance;
     public IState JumpStateInstance => jumpStateInstance;
+    public IState FallingStateInstance => fallingStateInstance;
+    public IState LandingStateInstance => landingStateInstance;
 
     [Header("Settings")]
     public float MinimumMovementThreshold = 0.1f;
@@ -51,7 +57,8 @@ public class PlayerStateMachine : MonoBehaviour
         idleStateInstance = new StateInstance(IdleStateSO);
         moveStateInstance = new StateInstance(MoveStateSO);
         jumpStateInstance = new StateInstance(JumpStateSO);
-
+        fallingStateInstance = new StateInstance(FallingStateSO);
+        landingStateInstance = new StateInstance(LandingStateSO);
     }
 
 

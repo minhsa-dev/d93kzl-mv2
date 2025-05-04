@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27a6f6545dbcb66439471887c5b1cf30, type: 3}
-  m_Name: Player_JumpStateSO
+  m_Script: {fileID: 11500000, guid: 405cc4c91f5955e4f8136699f36da743, type: 3}
+  m_Name: PlayerLandingStateSO
   m_EditorClassIdentifier: 
-  stateName: Player Jump State
-  jumpSpeed: 5
-  jumpAnimationClip: {fileID: 7400000, guid: a48cb3d74ab900641a19099311fbbe7a, type: 3}
+  stateName: 
+  landAnimationClip: {fileID: 7400000, guid: 574821c683fa7ef41a1add6e2d638844, type: 3}
   fadeDuration: 0.1

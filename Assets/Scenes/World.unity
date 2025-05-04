@@ -842,6 +842,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: c0748a3393c8bba49bde2b531a853fc9, type: 2}
     - target: {fileID: 127072119146972399, guid: d7ac90d9f5b7d7d41b06f3b7437d01b3, type: 3}
+      propertyPath: FallingStateSO
+      value: 
+      objectReference: {fileID: 11400000, guid: db2c5ee4ad27c2d4dbceac47dd6fbf06, type: 2}
+    - target: {fileID: 127072119146972399, guid: d7ac90d9f5b7d7d41b06f3b7437d01b3, type: 3}
+      propertyPath: LandingStateSO
+      value: 
+      objectReference: {fileID: 11400000, guid: d2f923ff52ba3c6409f92e0b84293765, type: 2}
+    - target: {fileID: 127072119146972399, guid: d7ac90d9f5b7d7d41b06f3b7437d01b3, type: 3}
       propertyPath: playerInputHandler
       value: 
       objectReference: {fileID: 258366958474322231}

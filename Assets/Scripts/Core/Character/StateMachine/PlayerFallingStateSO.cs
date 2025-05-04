@@ -1,27 +1,22 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PlayerJumpStateSO", menuName = "State/PlayerJumpStateSO")]
-public class PlayerJumpStateSO : StateSO
+[CreateAssetMenu(fileName = "PlayerFallingStateSO", menuName = "State/PlayerFallingStateSO")]
+public class PlayerFallingStateSO : StateSO
 {
-
-    [Header("Jump Settings")]
-    [SerializeField] private float jumpSpeed = 5f;
-    [SerializeField] private float rotationSmoothingSpeed = 10f;
-
     [Header("Animancer Settings")]
-    [SerializeField] AnimationClip jumpAnimationClip;
-    [SerializeField] float fadeDuration = 0.1f;
+    [SerializeField] private AnimationClip fallAnimationClip;
+    [SerializeField] private float fadeDuration = 0.1f;
+    [SerializeField] private float rotationSmoothingSpeed = 10f;
 
     public override void Enter(PlayerStateMachine stateMachine, float tr)
     {
-        stateMachine.PlayerController.verticalVelocity = jumpSpeed;
-
-        if (jumpAnimationClip != null)
+        if (fallAnimationClip != null)
         {
-            stateMachine.PlayerController.Animancer.Play(jumpAnimationClip, fadeDuration);
+            stateMachine.PlayerController.Animancer.Play(fallAnimationClip, fadeDuration);
+            Debug.Log($"[FSM] Entering Fall State");
         }
-        Debug.Log($"[FSM] Entering ({stateName}");
     }
+
     public override void StateUpdate(PlayerStateMachine stateMachine, float tr)
     {
         var dir = stateMachine.PlayerController.WorldMovementDirection;
@@ -30,7 +25,6 @@ public class PlayerJumpStateSO : StateSO
         stateMachine.PlayerController.AccumulateMovement(stateMachine.PlayerController.HorizontalVelocity, tr);
 
         // ROTATION:
-        #region
         if (dir.sqrMagnitude > stateMachine.MinimumMovementThreshold)
         {
             // current rotation
@@ -49,26 +43,20 @@ public class PlayerJumpStateSO : StateSO
             Quaternion next = Quaternion.Slerp(currentRotation, targetRotation, t);
 
             stateMachine.PlayerController.transform.rotation = next;
-            #endregion
 
-            //if (stateMachine.PlayerController.IsGrounded() && stateMachine.PlayerController.verticalVelocity <= 0f)
-            //{
-            //    stateMachine.ChangeState(stateMachine.IdleStateInstance);
-            //    return;
-            //}
-            Debug.Log($"[FSM] Updating ({stateName}");
 
-            if (stateMachine.PlayerController.verticalVelocity <= 0f)
+            if (stateMachine.PlayerController.IsGrounded())
             {
-                stateMachine.ChangeState(stateMachine.FallingStateInstance);
+                stateMachine.ChangeState(stateMachine.LandingStateInstance);
                 return;
             }
+            Debug.Log($"[FSM] Updating Fall State");
         }
     }
 
     public override void Exit(PlayerStateMachine stateMachine, float tr)
     {
-        Debug.Log($"[FSM] Exiting ({stateName}");
+        Debug.Log($"[FSM] Exiting Fall State");
     }
 
 }
