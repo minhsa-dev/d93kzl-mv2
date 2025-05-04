@@ -1,5 +1,6 @@
 using Animancer;
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,10 +34,23 @@ public class PlayerController : MonoBehaviour
     // upward speed applied when jump starts
     public float jumpSpeed = 5f;
 
-    [Header("Coyote Time")]
-    // how long to keep a jump press buffered
-    [SerializeField] private float jumpBufferTime = 0.2f;
-    [SerializeField] private float coyoteTime = 0.15f;
+    [Header("Jump Helpers")]
+    [Tooltip("Gravity Multipler when falling")]
+    [SerializeField] private float fallGravityMultiplier = 2.5f;
+    [Tooltip("Gravity Multiplier when jump button released early")]
+    [SerializeField] private float lowJumpGravityMultiplier = 2.0f;
+    [Tooltip("Gravity multiplier at jump apex (hang time)")]
+    [SerializeField] private float apexHangGravityMultiplier = 0.5f;
+    [Tooltip("Vertical-velocity threshold for apex hang")]
+    [SerializeField] private float apexHangThreshold = 0.2f;
+
+    private bool jumpHeld = false;
+
+    // Called by input handler when jump is pressed/released
+    public void SetJumpHeld(bool held)
+    {
+        jumpHeld = held;
+    }
 
     //internal timers
     private float lastJumpPressedTime = float.NegativeInfinity;
@@ -117,6 +131,26 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // ---Variable gravity
+        float gScale = 1f;
+        if (verticalVelocity < 0f)
+        {
+            gScale = fallGravityMultiplier;
+        }
+        else if (verticalVelocity > 0f && !jumpHeld)
+        {
+            gScale = lowJumpGravityMultiplier;
+        }
+        // Apex hang
+        if (Mathf.Abs(verticalVelocity) < apexHangThreshold)
+        {
+            gScale = Mathf.Min(gScale, apexHangGravityMultiplier);
+        }
+
+
+        verticalVelocity += Physics.gravity.y * gScale * Time.deltaTime;
+
         // ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤ COYOTE & BUFFER LOGIC ©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤©¤
         // Track last time we were grounded
         if (IsGrounded())
@@ -126,9 +160,6 @@ public class PlayerController : MonoBehaviour
         // (States will poll this property to see if we should jump)
         // We clear the buffered jump as soon as it's consumed by the FSM.
 
-
-        // Gravity: increase downward velocity
-        verticalVelocity += Physics.gravity.y * Time.deltaTime;
         if (IsGrounded() && verticalVelocity < 0f)
         {
             // If we are grounded, reset vertical velocity to zero

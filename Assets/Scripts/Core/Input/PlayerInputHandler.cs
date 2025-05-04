@@ -78,9 +78,13 @@ public class PlayerInputHandler : MonoBehaviour, InputActions.IPlayerActions
     {
         // when user press jump, buffer the input
         // FSM will check buffer on its tick
-        if (context.performed)
+        if (context.started)
         {
             playerStateMachine.PlayerController.BufferJumpInput();
+            playerStateMachine.PlayerController.SetJumpHeld(true);
+        } else if (context.canceled)
+        {
+            playerStateMachine.PlayerController.SetJumpHeld(false);
         }
     }
 
